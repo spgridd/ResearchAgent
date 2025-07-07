@@ -3,8 +3,10 @@ import pickle
 from langchain_community.vectorstores import FAISS
 from sentence_transformers import CrossEncoder
 import torch
+import logging
 
 from utils.langchain_wrappers import VertexAIEmbedding
+from utils.prompt_filter import get_faiss_filter, extract_filters
 
 load_dotenv()
 FAISS_INDEX_DIR = "data/vector_store/faiss"
@@ -23,11 +25,39 @@ def get_vector_store(documents=DOCUMENTS):
 
 def retrieve(query):
     vector_store = get_vector_store()
+    filters = extract_filters(query)
+    _, any_flag = get_faiss_filter(filters)
+    specific_filter, _ = get_faiss_filter(filters)
+
+    if specific_filter != {}:
+        if any_flag:
+            retrieval_plan = [
+                {'content_type': 'text', 'k': 10},
+                {'content_type': 'table', 'k': 10},
+                {'content_type': 'image', 'k': 5},
+            ]
+            
+            all_retrieved_docs = []
+            for plan in retrieval_plan:
+                content_type, k = plan['content_type'], plan['k']
+                
+                specific_filter, _ = get_faiss_filter(filters, force_content_type=content_type)
+                
+                temp_retriever = vector_store.as_retriever(
+                    search_kwargs={'k': k, 'filter': specific_filter}
+                )
+                
+                all_retrieved_docs.extend(temp_retriever.invoke(query))
+
+            unique_docs = {}
+            for doc in all_retrieved_docs:
+                if 'chunk_id' in doc.metadata:
+                    unique_docs[doc.metadata['chunk_id']] = doc
+            
+            return list(unique_docs.values())
+    
     retriever = vector_store.as_retriever(
-        search_kwargs={
-            "k": 20,
-        },
-        search_type="similarity"
+        search_kwargs={'k': 25, 'filter': specific_filter}
     )
     return retriever.get_relevant_documents(query)
 

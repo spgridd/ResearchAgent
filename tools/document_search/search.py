@@ -6,7 +6,7 @@ def document_search(query: str) -> dict:
         to find relevant chunks for given user query.
 
         Args:
-            query: Question from the user about the document.
+            query: Exact part of the question from the user about the document (if given filters include them).
 
         Returns:
             dict: List of retrieved chunks.

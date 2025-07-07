@@ -1,12 +1,15 @@
 import os
 from dotenv import load_dotenv
+from typing import List, Tuple, Any, Callable
 
 import google.genai as genai
 from google.genai import types
 from google.genai.types import Content, Part
+from langchain.schema import Document
 from langchain_core.embeddings import Embeddings
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
+from langchain_community.vectorstores import FAISS
 from sentence_transformers import CrossEncoder
 import torch
 
@@ -42,27 +45,3 @@ class VertexAIEmbedding(Embeddings):
             config=types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT")
         )
         return response.embeddings[0].values
-    
-
-class CrossEncoderReRanker(BaseRetriever):
-    retriever: BaseRetriever
-    model: CrossEncoder
-    top_n: int
-
-    def _get_relevant_documents(self, query: str, *, run_manager: CallbackManagerForRetrieverRun):
-        initial_docs = self.retriever.get_relevant_documents(query, callbacks=run_manager.get_child())
-        
-        if not initial_docs:
-            return []
-        
-        doc_pairs = [[query, doc.page_content] for doc in initial_docs]
-
-        with torch.no_grad():
-            scores = self.model.predict(doc_pairs)
-        
-        docs_with_scores = list(zip(initial_docs, scores))
-        sorted_docs_with_scores = sorted(docs_with_scores, key=lambda x: x[1], reverse=True)
-        
-        reranked_docs = [doc for doc, score in sorted_docs_with_scores[:self.top_n]]
-        
-        return reranked_docs
