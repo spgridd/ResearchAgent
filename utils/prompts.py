@@ -1,3 +1,18 @@
+
+
+def get_critique_prompt():
+    critique_prompt = """
+        You are an expert in validation of response relevancy.
+        For a given user query and LLM response to this question,
+        analyze whether response is comprehensive and satysfying.
+
+        Summarize your analysis by the one word verdict. You can choose
+        between 'correct' and 'incorrect'.
+    """
+
+    return critique_prompt
+
+
 def get_filter_prompt():
     filter_prompt = """
         Your task is to analyze a user's prompt and extract specific filtering criteria in a strict JSON format. Follow these rules precisely.
