@@ -1,17 +1,10 @@
 import os
 from dotenv import load_dotenv
-from typing import List, Tuple, Any, Callable
 
 import google.genai as genai
 from google.genai import types
 from google.genai.types import Content, Part
-from langchain.schema import Document
 from langchain_core.embeddings import Embeddings
-from langchain_core.retrievers import BaseRetriever
-from langchain_core.callbacks import CallbackManagerForRetrieverRun
-from langchain_community.vectorstores import FAISS
-from sentence_transformers import CrossEncoder
-import torch
 
 from utils.client import get_client
 

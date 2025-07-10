@@ -3,7 +3,6 @@ import pickle
 from langchain_community.vectorstores import FAISS
 from sentence_transformers import CrossEncoder
 import torch
-import logging
 
 from utils.langchain_wrappers import VertexAIEmbedding
 from utils.prompt_filter import get_faiss_filter, extract_filters
