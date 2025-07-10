@@ -1,9 +1,9 @@
 from google.adk.agents import Agent, LoopAgent, SequentialAgent
 from google.adk.tools import agent_tool, google_search
 
-from tools.document_search.search import document_search
-from tools.critique.critique import exit_loop
-from tools.canvas.canvas_tool import canvas_tool
+from tools.document_search import document_search
+from tools.exit_loop import exit_loop
+from tools.canvas_tool import canvas_tool
 
 
 web_search_agent = Agent(
