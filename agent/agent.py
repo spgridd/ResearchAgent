@@ -3,6 +3,7 @@ from google.adk.tools import agent_tool, google_search
 
 from tools.document_search.search import document_search
 from tools.critique.critique import exit_loop
+from tools.canvas.canvas_tool import canvas_tool
 
 
 web_search_agent = Agent(
@@ -62,10 +63,20 @@ synthesizer = Agent(
     description="Synthesize the final answer.",
     model="gemini-2.0-flash",
     instruction="""
-        Synthesize the final answer.
-    """
-)
+        You are the final synthesis agent. Your job is to produce a final answer from all collected data.
 
+        If the user request implies generating a document, report, or code snippet, call the `canvas_tool`.
+
+        - Use `format` to indicate the desired output type (e.g., "markdown", "html", "python").
+        - Use `content` to pass structured data like title and body.
+        - You may customize or pass a template if needed; otherwise, let the tool use its default.
+
+        Examples:
+        - For a markdown report: format="markdown", content={"title": "...", "body": "..."}
+        - For a Python code snippet: format="python", content={"title": "...", "body": "..."}
+    """,
+    tools=[canvas_tool]
+)
 
 refinement_loop = LoopAgent(
     name="RefinementLoop",
@@ -75,6 +86,7 @@ refinement_loop = LoopAgent(
     ],
     max_iterations=3
 )
+
 
 root_agent = SequentialAgent(
     name="FinalLoop",
