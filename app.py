@@ -1,8 +1,10 @@
 import streamlit as st
 from agent.agent import root_agent
 from vertexai.preview.reasoning_engines import AdkApp
+from langfuse import Langfuse
 
 app = AdkApp(agent=root_agent)
+langfuse = Langfuse()
 
 st.set_page_config(page_title="Research Agent", layout="centered")
 st.title("Research Agent")
@@ -10,21 +12,14 @@ st.title("Research Agent")
 if "history" not in st.session_state:
     st.session_state.history = []
 
-if "full_transcript" not in st.session_state:
-    st.session_state.full_transcript = []
-
 if prompt := st.chat_input("Ask your research question here..."):
     st.chat_message("user").markdown(prompt)
 
     with st.chat_message("assistant"):
-        trace_box = st.empty()
-        final_box = st.empty()
-
-        current_step = ""
-        all_steps = []
-        final_response = ""
-
         with st.spinner("Thinking..."):
+            trace = langfuse.trace(name="research_query", input={"prompt": prompt})
+
+            final_response = ""
             for event in app.stream_query(user_id="testuser", message=prompt):
                 content = (
                     event.get("content", {})
@@ -32,23 +27,17 @@ if prompt := st.chat_input("Ask your research question here..."):
                         .get("text", "")
                 ).strip()
 
-                if content and content not in [".", "…", "..."]:
-                    current_step += content
+                if content:
+                    final_response = content
 
-                    if content.endswith((".", "!", "?")):
-                        step = current_step.strip()
-                        all_steps.append(step)
-                        current_step = ""
+        st.markdown(f"**Answer:**\n*{final_response}*")
 
-                        trace_box.markdown("**Reasoning steps:**\n" + "\n".join(
-                            [f"- {s}" for s in all_steps]
-                        ))
-                        final_response = step
+        trace.update(output={"final_response": final_response})
 
-        final_box.markdown(f"**Answer:**\n*{final_response}*")
+        st.session_state.history.append((prompt, final_response))
 
-        st.session_state.history.append((prompt, all_steps, final_response))
-
-for user_msg, _, _ in st.session_state.history[:-1]:
+for user_msg, final_response in st.session_state.history[:-1]:
     with st.chat_message("user"):
         st.markdown(user_msg)
+    with st.chat_message("assistant"):
+        st.markdown(f"**Answer:**\n*{final_response}*")

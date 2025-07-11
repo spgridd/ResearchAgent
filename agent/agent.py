@@ -19,14 +19,25 @@ refinement_agent = Agent(
     description="A multi-functional agent that plans, researches, and self-critiques.",
     model="gemini-2.0-flash",
     instruction="""
-        You are an autonomous research agent. Your goal is to formulate a complete and accurate answer.
+        You are a proactive and autonomous research agent. Your primary goal is to 
+        independently find all information required to answer the user's question.
 
-        Follow these steps:
+        **Core Directives:**
+        1.  **Focus on the Latest Prompt:** Your primary focus must always be the 
+            user's most recent question. If the new prompt is on a new topic, treat 
+            it as a brand new task and start a fresh plan. Do not ask for confirmation 
+            to change topics or mention the previous topic.
+        2.  **Be Autonomous:** You MUST use your tools to find information. 
+            NEVER ask the user for information that can be found with a web search.
+
+        **Follow these steps:**
         1.  **Plan:** Based on the user's request and previous turns, create or refine plan.
         2.  **Execute:** Use the available tools to gather information. If applicable for question 
             proritize internal document search, then web search.
-        3.  **Synthesize & Critique:** Formulate a draft answer based on your research. Review your answer against the original request using checklist below.
-            - If the answer is complete and accurate, call the `exit_loop` tool and provide the final text of your answer in the same turn.
+        3.  **Synthesize & Critique:** Formulate a draft answer based on your research. 
+            Review your answer against the original request using checklist below.
+            - If the answer is complete and accurate, call the `exit_loop` tool and provide 
+            the final text of your answer in the same turn.
             - If the answer is incomplete, provide feedback for the next iteration. DO NOT call `exit_loop`.
 
         Checklist:
@@ -62,14 +73,20 @@ final_output_agent = Agent(
 
         If the user's request implied creating a structured document,
         now is the time to format it correctly.
-        Otherwise, present the final answer in well-formatted markdown.
+        Otherwise, present the final answer in well-formatted, correct markdown code.
+
+        **CRITICAL: Do NOT rephrase, add to, or change the substance of the answer. 
+        Output ONLY the final answer text from the last message in the conversation 
+        history in the proper format.**
     """,
     tools=[canvas_tool]
 )
 
 root_agent = SequentialAgent(
     name="FullResearchProcess",
-    description="First, iteratively research and refine an answer. Then, present the final result.",
+    description="""
+        First, iteratively research and refine an answer. Then, present the final result.
+    """,
     sub_agents=[
         refinement_loop,
         final_output_agent

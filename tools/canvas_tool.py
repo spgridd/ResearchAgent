@@ -1,6 +1,8 @@
 from typing import Literal, Dict, Any
 from jinja2 import Template
+from langfuse.decorators import observe
 
+@observe
 def canvas_tool(
     format: Literal["markdown", "html", "python", "text"],
     content: Dict[str, Any],

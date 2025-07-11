@@ -1,5 +1,7 @@
 from utils.vectorstore import retrieve, rerank
+from langfuse.decorators import observe
 
+@observe
 def document_search(query: str) -> dict:
     """
         Search through document titled: "IFC Annual Report 2024 financials" 
