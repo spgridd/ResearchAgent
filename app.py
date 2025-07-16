@@ -1,13 +1,18 @@
 import streamlit as st
-from agent.agent import root_agent
 from vertexai.preview.reasoning_engines import AdkApp
 from langfuse import Langfuse
 
-app = AdkApp(agent=root_agent)
+from agent.agent import create_agent
+
 langfuse = Langfuse()
 
 st.set_page_config(page_title="Research Agent", layout="centered")
 st.title("Research Agent")
+
+use_long_agent = st.toggle("Create Longer Reports", value=False)
+
+selected_agent = create_agent(long=True) if use_long_agent else create_agent(long=False)
+app = AdkApp(agent=selected_agent)
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -27,8 +32,11 @@ if prompt := st.chat_input("Ask your research question here..."):
                         .get("text", "")
                 ).strip()
 
+                agent = event.get("author", "")
+
                 if content:
-                    final_response = content
+                    if agent == "SynthesizerAgent":
+                        final_response = content
 
         st.markdown(f"**Answer:**\n*{final_response}*")
 
