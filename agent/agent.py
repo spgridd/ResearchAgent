@@ -1,6 +1,9 @@
+import os
 from google.adk.agents import Agent, LoopAgent
 from google.adk.tools import agent_tool, google_search
 from langfuse.decorators import observe
+from dotenv import load_dotenv
+from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioServerParameters
 
 from tools.document_search import document_search
 from tools.exit_loop import exit_loop
@@ -8,6 +11,8 @@ from tools.canvas_tool import canvas_tool
 from utils.prompts import (get_planner_prompt, get_executor_prompt, 
                            get_synthesizer_prompt, get_critique_prompt)
 
+
+load_dotenv()
 
 @observe
 def create_agent(long=False):
@@ -17,6 +22,17 @@ def create_agent(long=False):
         model="gemini-2.0-flash",
         instruction="You are a specialist in Google Search.",
         tools=[google_search]
+    )
+
+    VENV_PYTHON = os.getenv("VENV_PATH")
+
+    fetch_mcp_toolset = MCPToolset(
+        connection_params=StdioServerParameters(
+            command=VENV_PYTHON,
+            args=[
+                "-m", "mcp_server_fetch"
+            ],
+        )
     )
 
     planner = Agent(
@@ -33,7 +49,8 @@ def create_agent(long=False):
         instruction=get_executor_prompt(),
         tools=[
             document_search,
-            agent_tool.AgentTool(agent=web_search_agent, skip_summarization=True)
+            agent_tool.AgentTool(agent=web_search_agent, skip_summarization=True),
+            fetch_mcp_toolset
         ]
     )
 
@@ -65,3 +82,5 @@ def create_agent(long=False):
     )
 
     return root_agent
+
+root_agent = create_agent()
