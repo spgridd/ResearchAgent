@@ -8,7 +8,7 @@ from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioServerParamet
 from tools.document_search import document_search
 from tools.exit_loop import exit_loop
 from tools.canvas_tool import canvas_tool
-from utils.prompts import (get_planner_prompt, get_executor_prompt, 
+from utils.prompts_loader import (get_planner_prompt, get_executor_prompt, 
                            get_synthesizer_prompt, get_critique_prompt)
 
 
@@ -24,15 +24,16 @@ def create_agent(long=False):
         tools=[google_search]
     )
 
-    VENV_PYTHON = os.getenv("VENV_PATH")
-
     fetch_mcp_toolset = MCPToolset(
         connection_params=StdioServerParameters(
-            command=VENV_PYTHON,
+            command='docker',
             args=[
-                "-m", "mcp_server_fetch"
+                "run",
+                "-i",
+                "--rm",
+                "mcp/fetch"
             ],
-        )
+        ),
     )
 
     planner = Agent(

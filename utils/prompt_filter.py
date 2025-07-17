@@ -4,7 +4,7 @@ import json
 from google.genai import types
 
 from utils.client import get_client
-from utils.prompts import get_filter_prompt
+from utils.prompts_loader import get_filter_prompt
 
 
 class FilterSchema(BaseModel):
