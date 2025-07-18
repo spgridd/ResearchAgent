@@ -3,7 +3,7 @@ from google.adk.agents import Agent, LoopAgent
 from google.adk.tools import agent_tool, google_search
 from langfuse.decorators import observe
 from dotenv import load_dotenv
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioServerParameters
+from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioServerParameters, SseConnectionParams
 
 from tools.document_search import document_search
 from tools.exit_loop import exit_loop
@@ -25,14 +25,8 @@ def create_agent(long=False):
     )
 
     fetch_mcp_toolset = MCPToolset(
-        connection_params=StdioServerParameters(
-            command='docker',
-            args=[
-                "run",
-                "-i",
-                "--rm",
-                "mcp/fetch"
-            ],
+        connection_params=SseConnectionParams(
+            url="http://localhost:8001/sse"
         ),
     )
 
