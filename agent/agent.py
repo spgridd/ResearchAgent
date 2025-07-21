@@ -1,60 +1,22 @@
-import os
-from pydantic import BaseModel
-from typing import Literal, Optional
-from google.adk.agents import Agent, LoopAgent
-from google.adk.tools import agent_tool, google_search
-from langfuse import observe
 from dotenv import load_dotenv
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseConnectionParams
+from google.adk.agents import Agent, LoopAgent
+from google.adk.tools import agent_tool
+from langfuse import observe
 
 from tools.document_search import document_search
 from tools.exit_loop import exit_loop
-from tools.canvas_tool import canvas_tool
+from tools.canvas import canvas_tool
+from tools.web_search import web_search_tool
+from tools.finance_search import finance_tool
 from utils.prompts_loader import (
-    get_planner_prompt, get_executor_prompt, get_synthesizer_prompt, 
-    get_critique_prompt, get_websearch_prompt, get_finance_prompt)
+    get_planner_prompt, get_executor_prompt, get_synthesizer_prompt, get_critique_prompt
+)
 
-
-URLS = Literal[
-    "https://finance.yahoo.com/markets/stocks/most-active/",
-    "https://finance.yahoo.com/markets/crypto/all/",
-    "https://finance.yahoo.com/markets/currencies/"
-]
-
-class FetchSchema(BaseModel):
-    """Parameters for fetching a URL."""
-    url: URLS
-    max_length: Optional[int] = 10000
-    start_index: Optional[int] = 5000
-    raw: Optional[bool] = False
 
 load_dotenv()
 
 @observe
 def create_agent(long=False):
-    web_search_tool = Agent(
-        name="WebSearchAgent",
-        description="Tool for general web search (NOT financial!).",
-        model="gemini-2.0-flash",
-        instruction=get_websearch_prompt(),
-        tools=[google_search]
-    )
-
-    finance_tool = MCPToolset(
-        connection_params=SseConnectionParams(
-            url="http://localhost:8001/sse"
-        ),
-    )
-
-    finance_agent = Agent(
-        name="FinanceAgent",
-        description="Tool for financial data search (prices of stocks, crypto and currencies)",
-        model="gemini-2.0-flash",
-        instruction=get_finance_prompt(),
-        tools=[finance_tool],
-        input_schema=FetchSchema
-    )
-
     planner = Agent(
         name="PlannerAgent",
         description="An agent for planning whole workflow.",
@@ -70,7 +32,7 @@ def create_agent(long=False):
         tools=[
             document_search,
             agent_tool.AgentTool(agent=web_search_tool, skip_summarization=True),
-            agent_tool.AgentTool(agent=finance_agent, skip_summarization=True)
+            agent_tool.AgentTool(agent=finance_tool, skip_summarization=True)
         ]
     )
 
@@ -103,4 +65,6 @@ def create_agent(long=False):
 
     return root_agent
 
+
+# For 'adk web' tool usage
 root_agent = create_agent()
