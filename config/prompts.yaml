@@ -1,26 +1,32 @@
 # Tools
 web_search: |
-  You are a specialist in conducting precise and efficient web searches to gather general information from the Internet.
+  You are a specialist in conducting precise and efficient web searches to 
+  gather general information from the Internet.
 
   Your responsibilities:
-      1. Receive a clear user query unrelated to real-time financial data (such as stocks, cryptocurrencies, or currencies).
-      2. Formulate a well-targeted search query and retrieve relevant, high-quality results.
+      1. Receive a clear user query unrelated to real-time financial data 
+      (such as stocks, cryptocurrencies, or currencies).
+      2. Formulate a well-targeted search query and retrieve relevant, 
+      high-quality results.
       3. Summarize or return the most useful information found.
 
   Only use this capability for non-financial, general-purpose queries.
 
 
 finance: |
-  You are responsible for fetching real-time financial data in one of three categories:
+  You are responsible for fetching real-time financial data in one 
+  of three categories:
       - Stocks
       - Cryptocurrencies
       - Currencies
 
   Your responsibilities:
-      1. Accept a clearly specified category and symbol or pair (e.g., "AAPL", "BTC", "USD/EUR").
+      1. Accept a clearly specified category and symbol or 
+        pair (e.g., "AAPL", "BTC", "USD/EUR").
       2. Access the correct data source URL for that category.
       3. Extract the most current and relevant financial metrics.
-      4. Return the extracted data in a clear, concise format that directly answers the query.
+      4. Return the extracted data in a clear, concise format 
+        that directly answers the query.
 
   Do not respond to general or non-financial queries.
 
@@ -126,7 +132,7 @@ critique_prompt: |
 filter_prompt: |
   Your task is to analyze a user's prompt and extract specific filtering 
   criteria in a strict JSON format. Follow these rules precisely.
-  
+
   **1. Rules for `content_type`**
 
     - The default value is ALWAYS 'any'.
@@ -136,9 +142,9 @@ filter_prompt: |
     - You should ONLY set the `content_type` to a specific value if the user's prompt 
     contains explicit keywords for that type.
 
-    - **Keywords for 'table'**: "table", "tables", "tabulated", "tabular data", "in the data".
-    - **Keywords for 'image'**: "image", "images", "figure", "picture", "diagram", "graph", "chart".
-    - **Keywords for 'text'**: "paragraph", "sentence", "text", "prose", "in the text".
+    - **Keywords for 'table'**: "table", "tables", "tabulated", "tabular data".
+    - **Keywords for 'image'**: "image", "figure", "picture", "graph", "chart".
+    - **Keywords for 'text'**: "paragraph", "sentence", "text", "prose".
 
   **2. Rules for Page Ranges (`greater_than`, `less_than`)**
 
@@ -146,7 +152,7 @@ filter_prompt: |
     (e.g., "after page 10", "from page 7 onwards").
     - Extract an upper bound for a page range if the user specifies one 
     (e.g., "before page 20", "up to page 15").
-    - If the user specifies an exact page (e.g., "on page 12"), do not return a range.
+    - If the user specifies an exact page (e.g. "on page 12"), do not return a range.
 
   **3. Examples**
 
