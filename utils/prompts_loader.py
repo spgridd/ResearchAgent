@@ -19,8 +19,12 @@ def load_prompts() -> Dict[str, Any]:
         return yaml.safe_load(file)
 
 
-def get_filter_prompt() -> str:
-    return load_prompts()["filter_prompt"]
+def get_websearch_prompt() -> str:
+    return load_prompts()["web_search"]
+
+
+def get_finance_prompt() -> str:
+    return load_prompts()["finance"]
 
 
 def get_planner_prompt(long: bool = False) -> str:
@@ -39,3 +43,7 @@ def get_synthesizer_prompt(long: bool = False) -> str:
 
 def get_critique_prompt() -> str:
     return load_prompts()["critique_prompt"]
+
+
+def get_filter_prompt() -> str:
+    return load_prompts()["filter_prompt"]

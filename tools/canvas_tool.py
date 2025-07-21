@@ -9,7 +9,8 @@ def canvas_tool(
     template: str = ""
 ) -> str:
     """
-    Generates a formatted output (text, markdown, html, or code) using structured content and optional template.
+    If ordered by the user it generates a formatted output 
+    (text, markdown, html, or code) using structured content and optional template.
 
     Args:
         format: The target format for output.
