@@ -1,5 +1,5 @@
 from utils.vectorstore import retrieve, rerank
-from langfuse.decorators import observe
+from langfuse import observe
 
 @observe
 def document_search(query: str) -> dict:

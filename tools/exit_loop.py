@@ -1,5 +1,5 @@
 from google.adk.tools.tool_context import ToolContext
-from langfuse.decorators import observe
+from langfuse import observe
 
 @observe
 def exit_loop(tool_context: ToolContext):

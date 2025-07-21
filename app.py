@@ -1,10 +1,7 @@
 import streamlit as st
 from vertexai.preview.reasoning_engines import AdkApp
-from langfuse import Langfuse
 
 from agent.agent import create_agent
-
-langfuse = Langfuse()
 
 st.set_page_config(page_title="Research Agent", layout="centered")
 st.title("Research Agent")
@@ -22,7 +19,6 @@ if prompt := st.chat_input("Ask your research question here..."):
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            trace = langfuse.trace(name="research_query", input={"prompt": prompt})
 
             final_response = ""
             for event in app.stream_query(user_id="testuser", message=prompt):
@@ -39,8 +35,6 @@ if prompt := st.chat_input("Ask your research question here..."):
                         final_response = content
 
         st.markdown(f"**Answer:**\n*{final_response}*")
-
-        trace.update(output={"final_response": final_response})
 
         st.session_state.history.append((prompt, final_response))
 

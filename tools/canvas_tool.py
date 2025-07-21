@@ -1,6 +1,6 @@
 from typing import Literal, Dict, Any
 from jinja2 import Template
-from langfuse.decorators import observe
+from langfuse import observe
 
 @observe
 def canvas_tool(
