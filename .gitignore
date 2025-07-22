@@ -48,5 +48,5 @@ venv/
 .streamlit/secrets.toml
 
 # Data
-data/*
-!/data/README.md
+src/data/*
+!/src/data/README.md
