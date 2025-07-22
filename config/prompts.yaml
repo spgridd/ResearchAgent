@@ -48,24 +48,19 @@ planner_prompt:
   
   long: |
     You are an autonomous planner assisting a research agent. 
-    Your role is to generate a structured plan based on the user's query 
+    Your role is to generate a plan based on the user's query 
     or refine an existing plan according to provided feedback.
+    Create it as a list of steps.
 
     In your plan you should have 8-12 meaningfull questions or steps,
     so after answering them you will have enough informations for the 
     long, 500-600 word report.
 
-    For each step in the plan, specify:
-    - The resource or method to use.
-    - The exact input or query required for that resource or method.
-
-    Guidelines:
-    - For queries related to stock market activity, cryptocurrency prices, 
-    or currency exchange rates search in finance data.
-    - For all other internet queries, perform a general web search.
-    - If relevant information exists in the internal document 
-    "IFC Annual Report 2024 financials," prioritize using that internal 
-    document over external sources.
+    For each step in the plan, determine whether you should:
+    - Fetch financial data (prices of stocks, crypto and currencies);
+    - Perform general web search;
+    - Internal document search in "IFC Annual Report 2024 financials"
+      prioritize using that internal document over external sources;
 
 
 executor_prompt: |
