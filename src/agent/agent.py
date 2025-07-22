@@ -15,19 +15,22 @@ from utils.prompts_loader import (
 
 load_dotenv()
 
+MODEL= "gemini-2.0-flash"
+
+
 @observe
 def create_agent(long=False):
     planner = Agent(
         name="PlannerAgent",
         description="An agent for planning whole workflow.",
-        model="gemini-2.0-flash",
+        model=MODEL,
         instruction=get_planner_prompt(long=long)
     )
 
     executor = Agent(
         name="ExecutorAgent",
         description="An agent that execute steps of the given plan.",
-        model="gemini-2.0-flash",
+        model=MODEL,
         instruction=get_executor_prompt(),
         tools=[
             document_search,
@@ -39,7 +42,7 @@ def create_agent(long=False):
     synthesizer = Agent(
         name="SynthesizerAgent",
         description="Formats and presents the final answer based on the answer from previous step.",
-        model="gemini-2.0-flash",
+        model=MODEL,
         instruction=get_synthesizer_prompt(long=long),
         tools=[canvas_tool]
     )
@@ -47,7 +50,7 @@ def create_agent(long=False):
     critique = Agent(
         name="CritiqueAgent",
         description="Critique agent to determine quality of response.",
-        model="gemini-2.0-flash",
+        model=MODEL,
         instruction=get_critique_prompt(),
         tools=[exit_loop]
     )
