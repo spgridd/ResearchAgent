@@ -9,11 +9,11 @@ This project showcases an advanced autonomous research agent built with the Goog
 
 ## Table of Contents
 
-  * [Key Features](https://www.google.com/search?q=%23-key-features)
-  * [System Architecture](https://www.google.com/search?q=%23%EF%B8%8F-system-architecture)
-  * [Tools & Capabilities](https://www.google.com/search?q=%23%EF%B8%8F-tools--capabilities)
-  * [Getting Started](https://www.google.com/search?q=%23%EF%B8%8F-getting-started)
-  * [How to Use](https://www.google.com/search?q=%23-how-to-use)
+  * [Key Features](#key-features)
+  * [System Architecture](#system-architecture)
+  * [Tools & Capabilities](#tools--capabilities)
+  * [Getting Started](#getting-started)
+  * [How to Use](#how-to-use)
 
 -----
 
