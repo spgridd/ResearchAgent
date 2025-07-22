@@ -1,9 +1,9 @@
 
 -----
 
-# Advanced Autonomous Research Agent
+# Multi-Tool Autonomous Research Agent
 
-This project showcases an advanced autonomous research agent built with the Google Agent Development Kit (ADK) and deployed on Vertex AI. The agent is designed to autonomously plan, execute, critique, and refine its own research process to answer complex user queries. It features a multi-agent architecture that mimics a human research workflow, exposed through an interactive Streamlit web application.
+This project showcases an autonomous research agent built with the Google Agent Development Kit (ADK) and deployed on Vertex AI. The agent is designed to autonomously plan, execute, critique, and refine its own research process to answer complex user queries. It features a multi-agent architecture that mimics a human research workflow, exposed through an interactive Streamlit web application.
 
 -----
 
@@ -45,9 +45,9 @@ The workflow is as follows:
 
 The agent's `ExecutorAgent` is equipped with a variety of tools to perform its research tasks:
 
-  * `document_search`: Searches an internal repository of documents for relevant information.
+  * `document_search`: RAG tool that searches an internal repository of documents for relevant information.
   * `web_search_tool`: Conducts web searches to find up-to-date public information.
-  * `finance_tool`: Retrieves specific financial data.
+  * `finance_tool`: MCP tool that retrieves specific financial data.
   * `canvas_tool`: Used by the `SynthesizerAgent` to format and present the final answer.
 
 -----
